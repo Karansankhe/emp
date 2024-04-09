@@ -1,39 +1,48 @@
 import streamlit as st
 import pandas as pd
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
-# Set your MongoDB URI here
-MONGO_URI = "mongodb+srv://sankhe00009:NKg4IMJx1FhI5a3K@cluster0.zesd834.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+# Load environment variables from .env file
+load_dotenv()
 
-# Connect to MongoDB
-client = MongoClient(MONGO_URI)
-db = client.employee_db
-collection = db.employees
+# Access environment variables
+MONGO_URI = os.getenv('MONGO_URI')
 
-# Streamlit UI
-st.title('Employee Management System')
+# Check if MONGO_URI is not None
+if MONGO_URI is None:
+    st.error("MongoDB URI is not set. Please check your .env file.")
+else:
+    # Connect to MongoDB
+    client = MongoClient(MONGO_URI)
+    db = client.employee_db
+    collection = db.employees
 
-option = st.sidebar.selectbox('Menu', ['Add Employee', 'Delete Employee', 'View Employees'])
+    # Streamlit UI
+    st.title('Employee Management System')
 
-if option == 'Add Employee':
-    name = st.text_input('Enter Name:')
-    position = st.text_input('Enter Position:')
-    salary = st.number_input('Enter Salary:')
-    if st.button('Add'):
-        new_employee = {'Name': name, 'Position': position, 'Salary': salary}
-        collection.insert_one(new_employee)
-        st.success('Employee added successfully!')
+    option = st.sidebar.selectbox('Menu', ['Add Employee', 'Delete Employee', 'View Employees'])
 
-elif option == 'Delete Employee':
-    name = st.text_input('Enter Name to Delete:')
-    if st.button('Delete'):
-        collection.delete_one({'Name': name})
-        st.success('Employee deleted successfully!')
+    if option == 'Add Employee':
+        name = st.text_input('Enter Name:')
+        position = st.text_input('Enter Position:')
+        salary = st.number_input('Enter Salary:')
+        if st.button('Add'):
+            new_employee = {'Name': name, 'Position': position, 'Salary': salary}
+            collection.insert_one(new_employee)
+            st.success('Employee added successfully!')
 
-elif option == 'View Employees':
-    employees = list(collection.find())
-    if employees:
-        employee_df = pd.DataFrame(employees)
-        st.table(employee_df)
-    else:
-        st.info('No employees found.')
+    elif option == 'Delete Employee':
+        name = st.text_input('Enter Name to Delete:')
+        if st.button('Delete'):
+            collection.delete_one({'Name': name})
+            st.success('Employee deleted successfully!')
+
+    elif option == 'View Employees':
+        employees = list(collection.find())
+        if employees:
+            employee_df = pd.DataFrame(employees)
+            st.table(employee_df)
+        else:
+            st.info('No employees found.')
