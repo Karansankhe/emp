@@ -31,15 +31,24 @@ else:
             position = st.text_input('Enter Position:')
             salary = st.number_input('Enter Salary:')
             if st.button('Add'):
-                new_employee = {'Name': name, 'Position': position, 'Salary': salary}
-                collection.insert_one(new_employee)
-                st.success('Employee added successfully!')
+                if name.strip() and position.strip() and salary > 0:
+                    new_employee = {'Name': name, 'Position': position, 'Salary': salary}
+                    collection.insert_one(new_employee)
+                    st.success('Employee added successfully!')
+                else:
+                    st.error('Please enter valid employee details.')
 
         elif option == 'Delete Employee':
             name = st.text_input('Enter Name to Delete:')
             if st.button('Delete'):
-                collection.delete_one({'Name': name})
-                st.success('Employee deleted successfully!')
+                if name.strip():
+                    result = collection.delete_one({'Name': name})
+                    if result.deleted_count == 1:
+                        st.success('Employee deleted successfully!')
+                    else:
+                        st.error('Employee not found.')
+                else:
+                    st.error('Please enter the name of the employee to delete.')
 
         elif option == 'View Employees':
             employees = list(collection.find())
