@@ -1,14 +1,9 @@
 import streamlit as st
 import pandas as pd
 from pymongo import MongoClient
-from dotenv import load_dotenv
-import os
 
-# Load environment variables from .env file
-load_dotenv()
-
-# Access environment variables
-MONGO_URI = os.getenv('MONGO_URI')
+# Set your MongoDB URI here
+MONGO_URI = "mongodb://username:password@hostname:port/database_name"
 
 # Connect to MongoDB
 client = MongoClient(MONGO_URI)
