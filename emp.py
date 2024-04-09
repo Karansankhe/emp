@@ -3,7 +3,7 @@ import pandas as pd
 from pymongo import MongoClient
 
 # Set your MongoDB URI here
-MONGO_URI = "mongodb://sankhe00009:NKg4IMJx1FhI5a3K@hostname:27017/emp management"
+MONGO_URI = "mongodb://sankhe00009:NKg4IMJx1FhI5a3K@hostname:27017/employee_db"
 
 # Connect to MongoDB
 client = MongoClient(MONGO_URI)
